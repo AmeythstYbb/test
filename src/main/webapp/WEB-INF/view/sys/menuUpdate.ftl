@@ -1,0 +1,124 @@
+<h2 class="contentTitle">修改菜单</h2>
+
+<script>
+    $("#menuBtn").click(function () {
+        $.jBox.open("iframe:/menu/tree/copy/get?id=${(menuBo.id)!(-1)}", "选择", 300, 420, {
+            buttons: {"确定": "ok", "关闭": true}, submit: function (v, h, f) {
+                if (v == "ok") {
+                    var tree = h.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
+                    if (tree.selectedNode) {
+                        $("#parent_id_hidden").val(tree.selectedNode.id);
+                        $("#parent_id").val(tree.selectedNode.text);
+                    <#--${id}ParentIds = tree.selectedNode.path;-->
+                    }
+                }
+            }, loaded: function (h) {
+                $(".jbox-content", top.document).css("overflow-y", "hidden");
+            }
+        });
+    });
+</script>
+
+<div class="pageContent">
+
+<#if menuBo?? && menuParentBo??>
+    <form method="post" action="/menu/update" class="pageForm required-validate"
+          onsubmit="return validateCallback(this, navTabAjaxDone)">
+        <div class="pageFormContent nowrap" layoutH="97">
+            <dl>
+                <dt>上级菜单：</dt>
+                <dd>
+                    <input id="id_hidden" name="id_name_hidden" class="required" type="hidden"
+                           value="${(menuBo.id)!(-1)}">
+                    <input id="parent_id_hidden" name="parent_name_hidden" class="required" type="hidden"
+                           value="${(menuParentBo.id)!(-1)}">
+                    <input type="text" id="parent_id" name="parent_name" maxlength="20" class="required" alt=""
+                           value="${(menuParentBo.name)!""}"
+                           readonly="readonly"/>
+                    <a id="menuBtn" class="button" href="javascript:void(0)"
+                       rel="dlg_page8"><span>选择</span></a>
+                <#--target="dialog"-->
+                <#--<span class="info">class="required"</span>-->
+                </dd>
+            </dl>
+            <dl>
+                <dt>名称：</dt>
+                <dd>
+                    <input type="text" name="name" class="required" alt="请输入名称" maxlength="20"
+                           value="${menuBo.name!""}"/>
+                <#--<span class="info">class="required email"</span>-->
+                </dd>
+            </dl>
+            <dl>
+                <dt>链接：</dt>
+                <dd>
+                    <input type="text" name="href" class="" alt="" maxlength="500" value="${(menuBo.href)!""}"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>目标：</dt>
+                <dd>
+                    <input type="text" name="target" class="" alt="" maxlength="90" value="${(menuBo.target)!""}"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>图标：</dt>
+                <dd>
+                    <input type="text" name="icon" class="" alt="" maxlength="90" value="${(menuBo.icon)!""}"/>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt>排序：</dt>
+                <dd>
+                    <input type="text" name="sort" class="digits" alt="" maxlength="10" class="required"
+                           value="${(menuBo.sort)!""}"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>可见：</dt>
+                <dd>
+                    <#if menuBo.show == "1">
+                        <label><input type="radio" name="show" class="required" checked="checked"
+                                      value="1"/>显示</label>
+                        <label><input type="radio" name="show" class="required"
+                                      value="0"/>隐藏</label>
+                    <#else>
+                        <label><input type="radio" name="show" class="required"
+                                      value="1"/>显示</label>
+                        <label><input type="radio" name="show" class="required" checked="checked"
+                                      value="0"/>隐藏</label>
+                    </#if>
+                </dd>
+            </dl>
+            <dl>
+                <dt>权限标识：</dt>
+                <dd>
+                    <input type="text" name="permission" class="" value="${(menuBo.permission)!""}" alt="" maxlength="60"/>
+                    <span class="info">左侧菜单栏，输入 sys:menu:view</span>
+                </dd>
+            </dl>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit">提交</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">取消</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+
+</#if>
+</div>
+

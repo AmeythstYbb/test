@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.zlycare.web.boss_24.core.dao.mapper.MenuMapper">
+    <resultMap id="menuMapper" type="com.zlycare.web.boss_24.core.dao.po.MenuPo">
+        <id property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="parentIds" column="parent_ids"/>
+        <result property="name" column="name"/>
+        <result property="href" column="href"/>
+        <result property="target" column="target"/>
+        <result property="icon" column="icon"/>
+        <result property="sort" column="sort"/>
+        <result property="isShow" column="is_show"/>
+        <result property="permission" column="permission"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        id,parent_id,parent_ids,name,href,target,icon,sort,is_show,permission,del_flag
+    </sql>
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+    INSERT INTO menu (
+        parent_id ,
+        parent_ids ,
+        name,
+        href,
+        target,
+        icon,
+        sort,
+        is_show,
+        permission ,
+        del_flag
+    ) VALUES (
+    #{parentId} ,
+    #{parentIds} ,
+    #{name},
+    #{href} ,
+    #{target},
+    #{icon},
+    #{sort},
+    #{isShow},
+    #{permission} ,
+    #{delFlag}
+    )
+    ]]>
+        <selectKey resultType="long" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <!--去掉为空校验-->
+    <update id="update">
+        UPDATE menu
+        <set>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="parentIds != null and parentIds != '' ">
+                parent_ids = #{parentIds},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="href != null">
+                href = #{href},
+            </if>
+            <if test="target != null ">
+                target = #{target},
+            </if>
+            <if test="icon != null">
+                icon = #{icon},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="isShow != null">
+                is_show = #{isShow},
+            </if>
+            <if test="permission != null ">
+                permission = #{permission},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 通过id查询 -->
+    <select id="findOne" resultMap="menuMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM menu
+        WHERE id = #{id}
+    </select>
+    <!-- 查询父节点下的子节点, 模糊匹配 -->
+    <select id="findByParentIdsLike" resultMap="menuMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM menu
+        WHERE del_flag = #{delFlag}
+        AND parent_ids LIKE CONCAT(CONCAT('%,', #{parentId}), ',%')
+    </select>
+
+    <!-- 查询所有菜单 -->
+    <select id="findAllList" resultMap="menuMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM menu
+        WHERE del_flag = #{delFlag}
+    </select>
+
+    <!--根据id删除菜单及子菜单，实则修改删除状态-->
+    <update id="deleteById">
+        UPDATE menu
+        <set>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag} ,
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+        OR
+        parent_ids LIKE CONCAT(CONCAT('%,', #{id}), ',%')
+    </update>
+
+    <!--查询用户拥有的所有菜单-->
+    <select id="findByUserId" resultMap="menuMapper">
+        SELECT distinct m.*
+        FROM menu m,role r, user u, role_menu rm, user_role ur
+        WHERE
+        r.del_flag = #{delFlag}
+        AND u.delete_flag = #{delFlag}
+        AND m.del_flag = #{delFlag}
+        AND ur.user_id = u.id
+        AND ur.role_id = r.id
+        AND rm.role_id = r.id
+        AND rm.menu_id = m.id
+        AND u.id = #{userId}
+        ORDER BY m.sort
+    </select>
+
+    <!--查询用户拥有的所有一级菜单-->
+    <select id="findRootByUserId" resultMap="menuMapper">
+        SELECT distinct m.*
+        FROM menu m,role r, user u, role_menu rm, user_role ur
+        WHERE
+        r.del_flag = #{delFlag}
+        AND u.delete_flag = #{delFlag}
+        AND m.del_flag = #{delFlag}
+        AND ur.user_id = u.id
+        AND ur.role_id = r.id
+        AND rm.role_id = r.id
+        AND rm.menu_id = m.id
+        AND u.id = #{userId}
+        AND m.parent_id = 1
+        ORDER BY m.sort
+    </select>
+
+    <!--查询所有一级菜单-->
+    <select id="findAllRoot" resultMap="menuMapper">
+        SELECT distinct m.*
+        FROM menu m
+        WHERE
+        m.del_flag = #{delFlag}
+        AND m.parent_id = 1
+        ORDER BY m.sort
+    </select>
+
+    <!--根据id查询用户拥有的子菜单，不含当前id对应菜单-->
+    <select id="findByUserIdAndRootId" resultMap="menuMapper">
+        SELECT distinct m.*
+        FROM menu m,role r, user u, role_menu rm, user_role ur
+        WHERE
+        r.del_flag = #{delFlag}
+        AND u.delete_flag = #{delFlag}
+        AND m.del_flag = #{delFlag}
+        AND ur.user_id = u.id
+        AND ur.role_id = r.id
+        AND rm.role_id = r.id
+        AND rm.menu_id = m.id
+        AND u.id = #{userId}
+        AND (m.parent_id = #{rootId} OR
+        parent_ids LIKE CONCAT(CONCAT('%,', #{rootId}), ',%'))
+        ORDER BY m.sort
+    </select>
+
+    <!--根据id查询拥有的子菜单，不含当前id对应菜单-->
+    <select id="findByRootId" resultMap="menuMapper">
+        SELECT distinct m.*
+        FROM menu m
+        WHERE
+        m.del_flag = #{delFlag}
+        AND (m.parent_id = #{rootId} OR
+        parent_ids LIKE CONCAT(CONCAT('%,', #{rootId}), ',%'))
+        ORDER BY m.sort
+    </select>
+
+    <!--查询角色拥有的所有菜单-->
+    <select id="findByRoleId" resultMap="menuMapper">
+        SELECT distinct m.*
+        FROM menu m,role r, role_menu rm
+        WHERE
+        r.del_flag = #{delFlag}
+        AND m.del_flag = #{delFlag}
+        AND rm.role_id = r.id
+        AND rm.menu_id = m.id
+        AND r.id = #{roleId}
+        ORDER BY m.sort
+    </select>
+
+</mapper>

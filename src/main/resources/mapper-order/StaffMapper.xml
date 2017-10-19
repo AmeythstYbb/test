@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zlycare.web.boss_24.core.dao.mapper.StaffMapper">
+    <resultMap id="staffMap" type="com.zlycare.web.boss_24.core.dao.po.StaffPo">
+        <result column="job_number" property="jobNumber"/>
+        <result column="user_name" property="userName"/>
+        <result column="gender" property="gender"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="dept_children_id" property="deptChildrenId"/>
+        <result column="staff_level" property="staffLevel"/>
+        <result column="status" property="status"/>
+        <result column="kind" property="kind"/>
+        <result column="birthday" property="birthday"/>
+        <result column="entry_date" property="entryDate"/>
+        <result column="post_date" property="postDate"/>
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="photo_url" property="photoUrl"/>
+        <result column="age" property="age"/>
+        <result column="nation" property="nation"/>
+        <result column="political_status" property="politicalStatus"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="certificate_no" property="certificateNo"/>
+        <result column="household_type" property="householdType"/>
+        <result column="household" property="household"/>
+        <result column="household_address" property="householdAddress"/>
+        <result column="address" property="address"/>
+        <result column="education" property="education"/>
+        <result column="graduation_date" property="graduationDate"/>
+        <result column="graduated_school" property="graduatedSchool"/>
+        <result column="profession" property="profession"/>
+        <result column="work_address" property="workAddress"/>
+        <result column="position" property="position"/>
+        <result column="departure_date" property="departureDate"/>
+        <result column="contract_type" property="contractType"/>
+        <result column="contract_start_date" property="contractStartDate"/>
+        <result column="contract_end_date" property="contractEndDate"/>
+        <result column="company_age" property="companyAge"/>
+        <result column="work_age" property="workAge"/>
+        <result column="annual_leave_days" property="annualLeaveDays"/>
+        <result column="five_insurance_end_date" property="fiveInsuranceEndDate"/>
+        <result column="housing_fund_end_date" property="housingFundEndDate"/>
+        <result column="recruit_channel" property="recruitChannel"/>
+        <result column="introducer" property="introducer"/>
+        <result column="debit_card_no" property="debitCardNo"/>
+        <result column="spouse" property="spouse"/>
+        <result column="spouse_birthday" property="spouseBirthday"/>
+        <result column="spouse_mobile" property="spouseMobile"/>
+        <result column="children_info" property="childrenInfo"/>
+        <result column="remark" property="remark"/>
+        <result column="remark_2" property="remark2"/>
+        <result column="mobile" property="mobile"/>
+        <result column="marital_status" property="maritalStatus"/>
+        <result column="area_id" property="areaId"/>
+        <result column="business_id" property="businessId"/>
+        <result column="email" property="email"/>
+        <result column="create_date" property="createDate"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="login_date" property="loginDate"/>
+        <result column="area_id" property="areaId"/>
+        <result column="business_id" property="businessId"/>
+        <result column="email" property="email"/>
+        <result column="create_date" property="createDate"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="login_date" property="loginDate"/>
+        <result column="children_name" property="childrenName"/>
+        <result column="children_birthday" property="childrenBirthday"/>
+        <result column="children_gender" property="childrenGender"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id,job_number,user_name,gender,dept_id,dept_children_id,staff_level,status,kind,
+        birthday,entry_date,post_date, `post_date`,
+        `user_id`, `photo_url`, `age`, `nation`, `political_status`,
+        `certificate_type`, `certificate_no`, `household_type`,
+        `household`, `household_address`, `address`, `education`,
+        `graduation_date`, `graduated_school`, `profession`,
+        `work_address`, `position`, `departure_date`,
+        `contract_type`, `contract_start_date`, `contract_end_date`,`remark_2`,
+        `company_age`, `work_age`, `annual_leave_days`,
+        `five_insurance_end_date`, `housing_fund_end_date`, `recruit_channel`,
+        `introducer`, `debit_card_no`, `spouse`,
+        `spouse_birthday`, `spouse_mobile`, `children_info`,
+        `remark`, `mobile`, `marital_status`, `area_id`, `business_id`, `email`, `create_date`,
+        `login_ip`, `login_date`, `area_id`, `business_id`, `email`, `create_date`, `login_ip`, `login_date`,
+        `children_name`, `children_birthday`, `children_gender`
+    </sql>
+
+    <sql id="whereParam">
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            delete_flag = 0
+            and id != 1
+            <if test="paramsMap.id!=null">
+                and id=#{paramsMap.id}
+            </if>
+            <if test="paramsMap.deptId!=null">
+                and dept_id=#{paramsMap.deptId}
+            </if>
+            <if test="paramsMap.deptChildrenId!=null">
+                and dept_children_id=#{paramsMap.deptChildrenId}
+            </if>
+            <if test="paramsMap.userName!=null and paramsMap.userName!=''">
+                and user_name LIKE CONCAT('%',#{paramsMap.userName},'%')
+            </if>
+            <if test="paramsMap.kind!=null and paramsMap.kind!=0">
+                and kind = #{paramsMap.kind}
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="updateParam">
+        <trim prefix="set" suffixOverrides=",">
+            <if test="paramsMap.jobNumber!=null">job_number=#{paramsMap.jobNumber},</if>
+            <if test="paramsMap.userName!=null">user_name=#{paramsMap.userName},</if>
+            <if test="paramsMap.gender!=null">gender=#{paramsMap.gender},</if>
+            <if test="paramsMap.deptId!=null">dept_id=#{paramsMap.deptId},</if>
+            <if test="paramsMap.deptChildrenId!=null">dept_children_id=#{paramsMap.deptChildrenId},</if>
+            <if test="paramsMap.staffLevel!=null">staff_level=#{paramsMap.staffLevel},</if>
+            <if test="paramsMap.status!=null">status=#{paramsMap.status},</if>
+            <if test="paramsMap.kind!=null">kind=#{paramsMap.kind},</if>
+            <if test="paramsMap.birthday!=null">birthday=#{paramsMap.birthday},</if>
+            <if test="paramsMap.entryDate!=null">entry_date=#{paramsMap.entryDate},</if>
+            <if test="paramsMap.postDate!=null">post_date=#{paramsMap.postDate},</if>
+            <if test="paramsMap.userId!=null">user_id=#{paramsMap.userId},</if>
+            <if test="paramsMap.photoUrl!=null">photo_url=#{paramsMap.photoUrl},</if>
+            <if test="paramsMap.age!=null">age=#{paramsMap.age},</if>
+            <if test="paramsMap.nation!=null">nation=#{paramsMap.nation},</if>
+            <if test="paramsMap.politicalStatus!=null">political_status=#{paramsMap.politicalStatus},</if>
+            <if test="paramsMap.certificateType!=null">certificate_type=#{paramsMap.certificateType},</if>
+            <if test="paramsMap.certificateNo!=null">certificate_no=#{paramsMap.certificateNo},</if>
+            <if test="paramsMap.householdType!=null">household_type=#{paramsMap.householdType},</if>
+            <if test="paramsMap.household!=null">household=#{paramsMap.household},</if>
+            <if test="paramsMap.householdAddress!=null">household_address=#{paramsMap.householdAddress},</if>
+            <if test="paramsMap.address!=null">address=#{paramsMap.address},</if>
+            <if test="paramsMap.education!=null">education=#{paramsMap.education},</if>
+            <if test="paramsMap.graduationDate!=null">graduation_date=#{paramsMap.graduationDate},</if>
+            <if test="paramsMap.graduatedSchool!=null">graduated_school=#{paramsMap.graduatedSchool},</if>
+            <if test="paramsMap.profession!=null">profession=#{paramsMap.profession},</if>
+            <if test="paramsMap.workAddress!=null">work_address=#{paramsMap.workAddress},</if>
+            <if test="paramsMap.position!=null">position=#{paramsMap.position},</if>
+            <if test="paramsMap.departureDate!=null">departure_date=#{paramsMap.departureDate},</if>
+            <if test="paramsMap.contractType!=null">contract_type=#{paramsMap.contractType},</if>
+            <if test="paramsMap.contractStartDate!=null">contract_start_date=#{paramsMap.contractStartDate},</if>
+            <if test="paramsMap.contractEndDate!=null">contract_end_date=#{paramsMap.contractEndDate},</if>
+            <if test="paramsMap.companyAge!=null">company_age=#{paramsMap.companyAge},</if>
+            <if test="paramsMap.workAge!=null">work_age=#{paramsMap.workAge},</if>
+            <if test="paramsMap.annualLeaveDays!=null">annual_leave_days=#{paramsMap.annualLeaveDays},</if>
+            <if test="paramsMap.fiveInsuranceEndDate!=null">five_insurance_end_date=#{paramsMap.fiveInsuranceEndDate},
+            </if>
+            <if test="paramsMap.housingFundEndDate!=null">housing_fund_end_date=#{paramsMap.housingFundEndDate},</if>
+            <if test="paramsMap.recruitChannel!=null">recruit_channel=#{paramsMap.recruitChannel},</if>
+            <if test="paramsMap.introducer!=null">introducer=#{paramsMap.introducer},</if>
+            <if test="paramsMap.debitCardNo!=null">debit_card_no=#{paramsMap.debitCardNo},</if>
+            <if test="paramsMap.spouse!=null">spouse=#{paramsMap.spouse},</if>
+            <if test="paramsMap.spouseBirthday!=null">spouse_birthday=#{paramsMap.spouseBirthday},</if>
+            <if test="paramsMap.spouseMobile!=null">spouse_mobile=#{paramsMap.spouseMobile},</if>
+            <if test="paramsMap.childrenInfo!=null">children_info=#{paramsMap.childrenInfo},</if>
+            <if test="paramsMap.remark!=null">remark=#{paramsMap.remark},</if>
+            <if test="paramsMap.remark2!=null">remark_2=#{paramsMap.remark2},</if>
+            <if test="paramsMap.mobile!=null">mobile=#{paramsMap.mobile},</if>
+            <if test="paramsMap.maritalStatus!=null">marital_status=#{paramsMap.maritalStatus},</if>
+            <if test="paramsMap.childrenName!=null">children_name=#{paramsMap.childrenName},</if>
+            <if test="paramsMap.childrenBirthday!=null">children_birthday=#{paramsMap.childrenBirthday},</if>
+            <if test="paramsMap.childrenGender!=null">children_gender=#{paramsMap.childrenGender},</if>
+        </trim>
+    </sql>
+
+    <update id="update" parameterType="java.util.Map">
+        UPDATE user
+        <include refid="updateParam"/>
+        WHERE id = #{paramsMap.id}
+    </update>
+
+    <select id="findAllListWithPage" resultMap="staffMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="baseColumn"/>
+        from user
+        <include refid="whereParam"/>
+        limit #{startIndex},#{limit}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        count(1)
+        from user
+        <include refid="whereParam"/>
+    </select>
+
+    <select id="findOne" resultMap="staffMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="baseColumn"/>
+        FROM user
+        WHERE id = #{id};
+    </select>
+
+    <insert id="insert" parameterType="java.util.Map">
+    INSERT INTO `user` (
+        `job_number`, `user_name`, `gender`, `dept_id`, `dept_children_id`, `staff_level`, `status`,`mobile`,
+        `kind`, `birthday`, `entry_date`, `post_date`, `user_id`, `photo_url`, `age`,`marital_status`,
+        `nation`, `political_status`, `certificate_type`, `certificate_no`, `household_type`, `household`,
+        `household_address`, `address`, `education`, `graduation_date`, `graduated_school`, `profession`,
+        `work_address`, `position`, `departure_date`, `contract_type`, `contract_start_date`, `contract_end_date`,
+        `company_age`, `work_age`, `annual_leave_days`, `five_insurance_end_date`, `housing_fund_end_date`,
+        `recruit_channel`, `introducer`, `debit_card_no`, `spouse`, `spouse_birthday`, `spouse_mobile`, `children_info`,
+        `remark`,`remark_2`,`create_date`,
+        `children_name`,`children_birthday`,`children_gender`
+    )
+    VALUES
+        (
+        #{staffMap.jobNumber}, #{staffMap.userName}, #{staffMap.gender}, #{staffMap.deptId}, #{staffMap.deptChildrenId}, #{staffMap.staffLevel}, #{staffMap.status},#{staffMap.mobile},
+        #{staffMap.kind},#{staffMap.birthday}, #{staffMap.entryDate}, #{staffMap.postDate}, #{staffMap.userId}, #{staffMap.photoUrl}, #{staffMap.age},#{staffMap.maritalStatus},
+        #{staffMap.nation}, #{staffMap.politicalStatus}, #{staffMap.certificateType}, #{staffMap.certificateNo}, #{staffMap.householdType}, #{staffMap.household},
+        #{staffMap.householdAddress}, #{staffMap.address}, #{staffMap.education}, #{staffMap.graduationDate}, #{staffMap.graduatedSchool}, #{staffMap.profession},
+        #{staffMap.workAddress}, #{staffMap.position}, #{staffMap.departureDate}, #{staffMap.contractType}, #{staffMap.contractStartDate}, #{staffMap.contractEndDate},
+        #{staffMap.companyAge}, #{staffMap.workAge}, #{staffMap.annualLeaveDays}, #{staffMap.fiveInsuranceEndDate}, #{staffMap.housingFundEndDate},
+        #{staffMap.recruitChannel}, #{staffMap.introducer}, #{staffMap.debitCardNo}, #{staffMap.spouse}, #{staffMap.spouseBirthday}, #{staffMap.spouseMobile}, #{staffMap.childrenInfo},
+        #{staffMap.remark},#{staffMap.remark2},NOw(),
+        #{staffMap.childrenName},#{staffMap.childrenBirthday},#{staffMap.childrenGender}
+        );
+    </insert>
+
+    <update id="fakeDelete">
+       UPDATE user set delete_flag = 1
+       where id=#{staffId}
+    </update>
+
+    <!-- 通过手机号查询 -->
+    <select id="getUserByPhone" resultMap="staffMap">
+        SELECT
+        <include refid="baseColumn"/>
+        FROM user
+        WHERE mobile = #{phone}
+        AND delete_flag = #{deleteFlag}
+    </select>
+</mapper>

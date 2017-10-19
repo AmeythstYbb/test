@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.zlycare.web.boss_24.core.dao.mapper.BusinessMapper">
+    <resultMap id="businessMapper" type="com.zlycare.web.boss_24.core.dao.po.BusinessPo">
+        <id property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="parentIds" column="parent_ids"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="remarks" column="remarks"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        id,parent_id,parent_ids,name,code,remarks,del_flag
+    </sql>
+    <!-- 通过id查询 -->
+    <select id="findOne" resultMap="businessMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM business
+        WHERE id = #{id}
+    </select>
+    <!--根据id删除区域及子区域，实则修改删除状态-->
+    <update id="deleteById">
+        UPDATE business
+        <set>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag} ,
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+        OR
+        parent_ids LIKE CONCAT(CONCAT('%,', #{id}), ',%')
+    </update>
+    <!-- 查询父节点下的子节点, 模糊匹配 -->
+    <select id="findByParentIdsLike" resultMap="businessMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM business
+        WHERE del_flag = #{delFlag}
+        AND parent_ids LIKE CONCAT(CONCAT('%,', #{parentId}), ',%')
+    </select>
+    <!-- 查询所有地域 -->
+    <select id="findAllList" resultMap="businessMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM business
+        WHERE del_flag = #{delFlag}
+    </select>
+    <!-- 查询当前节点和子节点-->
+    <select id="findAllChild" resultMap="businessMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM business
+        WHERE del_flag = #{delFlag}
+        and(
+        id = #{parentId}
+        OR
+        parent_id = #{parentId}
+        OR
+        parent_ids LIKE CONCAT(CONCAT('%,', #{parentId}), ',%')
+        )
+        order by code
+    </select>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.zlycare.web.boss_24.core.dao.mapper.UserRoleMapper">
+    <resultMap id="userRoleMapper" type="com.zlycare.web.boss_24.core.dao.po.UserRolePo">
+        <result property="role_id" column="roleId"/>
+        <result property="user_id" column="userId"/>
+    </resultMap>
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+    INSERT INTO user_role (
+        role_id ,
+        user_id
+    ) VALUES (
+    #{roleId} ,
+    #{userId}
+    )
+    ]]>
+        <selectKey resultType="long" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <delete id="deleteByRoleId">
+ <![CDATA[
+
+        DELETE  FROM user_role
+        WHERE
+        role_id = #{roleId}
+
+        ]]>
+    </delete>
+
+    <delete id="deleteByUserId">
+        <![CDATA[
+
+        DELETE  FROM user_role
+        WHERE
+        user_id = #{userId}
+        ]]>
+    </delete>
+
+    <select id="get" resultMap="userRoleMapper">
+        SELECT
+            *
+        FROM user_role
+        WHERE role_id = #{roleId}
+        AND user_id = #{userId}
+    </select>
+</mapper>

@@ -1,0 +1,66 @@
+/**
+* Created by linguodong on 2017/7/6.
+*/
+<script>
+
+
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+
+    Array.prototype.indexOf = function (val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+
+    var x = [];
+    x.push("a");
+    x.push("b");
+    x.push("c");
+    x.push("d");
+    x.push("a");
+    console.log("start");
+    console.log(x);
+    console.log("remove");
+    x.remove("a");
+    console.log(x);
+    console.log("remove");
+    x.remove("a");
+    console.log(x);
+
+    var arr = [1, 2, 1];
+    var map = {};
+    for (var i = 0; i < arr.length; i++) {
+        var ai = arr[i];
+        if (!map[ai]) {
+            map[ai] = 1;
+        } else {
+            map[ai]++;
+        }
+    }
+    console.log(map);
+
+    Array.prototype.count = function (val) {
+        var count = 0;
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) count++;
+        }
+        return count;
+    };
+
+
+    var y = [];
+    y.push("a");
+    y.push("b");
+    y.push("c");
+    y.push("d");
+    y.push("a");
+    console.log("y ");
+    console.log(y);
+    console.log(y.count(""));
+</script>

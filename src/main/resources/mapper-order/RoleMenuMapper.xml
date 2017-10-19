@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.zlycare.web.boss_24.core.dao.mapper.RoleMenuMapper">
+    <resultMap id="roleMenuMapper" type="com.zlycare.web.boss_24.core.dao.po.RoleMenuPo">
+        <result property="role_id" column="roleId"/>
+        <result property="menu_id" column="menuId"/>
+    </resultMap>
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+    INSERT INTO role_menu (
+        role_id ,
+        menu_id
+    ) VALUES (
+    #{roleId} ,
+    #{menuId}
+    )
+    ]]>
+        <selectKey resultType="long" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <delete id="deleteByRoleId">
+ <![CDATA[
+
+        DELETE  FROM role_menu
+        WHERE
+        role_id = #{roleId}
+
+        ]]>
+    </delete>
+
+    <delete id="deleteByMenuId">
+        <![CDATA[
+
+        DELETE  FROM role_menu
+        WHERE
+        menu_id = #{menuId}
+
+        ]]>
+    </delete>
+
+    <select id="get" resultMap="roleMenuMapper">
+        SELECT
+            *
+        FROM role_menu
+        WHERE role_id = #{roleId}
+        AND menu_id = #{menuId}
+    </select>
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.zlycare.web.boss_24.core.dao.mapper.RoleMapper">
+    <resultMap id="roleMapper" type="com.zlycare.web.boss_24.core.dao.po.RolePo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        id,name,del_flag
+    </sql>
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+    INSERT INTO role (
+        name ,
+        del_flag
+    ) VALUES (
+    #{name} ,
+    #{delFlag}
+    )
+    ]]>
+        <selectKey resultType="long" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <!-- update -->
+    <!--<update id="update">-->
+    <!--UPDATE report_current-->
+    <!--<set>-->
+    <!--editor_id = #{editorId},-->
+    <!--<if test="reportId != null">-->
+    <!--report_id = #{reportId},-->
+    <!--</if>-->
+    <!--<if test="times != null">-->
+    <!--times = times + 1,-->
+    <!--</if>-->
+    <!--<if test="keeperStatus != null">-->
+    <!--keeper_status = #{keeperStatus},-->
+    <!--</if>-->
+    <!--<if test="keeperCommitTime != null">-->
+    <!--keeper_commit_time = #{keeperCommitTime},-->
+    <!--</if>-->
+    <!--<if test="customerStatus != null">-->
+    <!--customer_status = #{customerStatus},-->
+    <!--</if>-->
+    <!--&lt;!&ndash;<if test="customerComment != null and customerComment != ''">&ndash;&gt;-->
+    <!--customer_comment = #{customerComment},-->
+    <!--&lt;!&ndash;</if>&ndash;&gt;-->
+    <!--&lt;!&ndash;<if test="customerAuditTime != null">&ndash;&gt;-->
+    <!--customer_audit_time = #{customerAuditTime},-->
+    <!--&lt;!&ndash;</if>&ndash;&gt;-->
+    <!--</set>-->
+    <!--WHERE order_id = #{orderId}-->
+    <!--</update>-->
+
+    <!-- 通过id查询 -->
+    <select id="findOne" resultMap="roleMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM role
+        WHERE id = #{id}
+    </select>
+    <!-- 通过姓名查询 -->
+    <select id="findByName" resultMap="roleMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM role
+        WHERE name = #{name}
+        AND del_flag = #{delFlag}
+    </select>
+    <!-- 查询所有角色 -->
+    <select id="findAllList" resultMap="roleMapper">
+        SELECT
+        <include refid="columns"/>
+        FROM role
+        WHERE del_flag = #{delFlag}
+    </select>
+    <!--根据id删除角色，实则修改删除状态-->
+    <update id="deleteById">
+        UPDATE role
+        <set>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag} ,
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+    <!--查询用户拥有的所有角色-->
+    <select id="findByUserId" resultMap="roleMapper">
+        SELECT r.id, r.name, r.del_flag
+        FROM user u,role r, user_role ur
+        WHERE r.del_flag = #{delFlag}
+        AND u.delete_flag = #{delFlag}
+        AND ur.user_id = u.id
+        AND ur.role_id = r.id
+        AND u.id = #{userId}
+        ORDER BY r.name
+    </select>
+
+    <update id="update">
+        UPDATE role
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper>
